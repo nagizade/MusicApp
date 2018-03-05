@@ -17,7 +17,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 
 /**
- * Created by redShaman on 3/2/2018.
+ * Created by Nagizade on 3/2/2018.
  */
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,

@@ -1,7 +1,7 @@
 package com.nagizade.musicapp;
 
 /**
- * Created by redShaman on 3/2/2018.
+ * Created by Nagizade on 3/2/2018.
  */
 
 public class Song {

@@ -8,7 +8,8 @@ import java.util.Comparator;
 import android.net.Uri;
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.os.IBinder;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,33 +20,45 @@ import android.view.View;
 import com.nagizade.musicapp.MusicService.MusicBinder;
 import android.widget.MediaController.MediaPlayerControl;
 
-public class MainActivity extends AppCompatActivity implements MediaPlayerControl {
+
+public class MainActivity extends AppCompatActivity implements MediaPlayerControl,ItemClickListener {
 
     private ArrayList<Song> songList;
-    private ListView songView;
     private MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound=false;
     private MusicController controller;
     private boolean paused=false, playbackPaused=false;
+    private RecyclerView mRecyclerView;
+    private SongListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        songView = (ListView) findViewById(R.id.song_list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
         songList = new ArrayList<Song>();
         getSongList();
-
         Collections.sort(songList, new Comparator<Song>() {
             public int compare(Song a, Song b) {
                 return a.getTitle().compareTo(b.getTitle());
             }
         });
-        SongAdapter songAdt = new SongAdapter(this, songList);
-        songView.setAdapter(songAdt);
-
+        mAdapter = new SongListAdapter(this,songList);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setClickListener(this);
         setController();
 
     }
@@ -104,8 +117,9 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         }
     }
 
-    public void songPicked(View view){
-        musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
+    @Override
+    public void onClick(View view,int position){
+        musicSrv.setSong(position);
         musicSrv.playSong();
         if(playbackPaused){
             setController();
@@ -152,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             }
         });
         controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.song_list));
+        controller.setAnchorView(findViewById(R.id.recycler_view));
         controller.setEnabled(true);
     }
 
@@ -258,4 +272,5 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         controller.hide();
         super.onStop();
     }
+
 }

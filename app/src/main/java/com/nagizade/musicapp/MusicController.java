@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.MediaController;
 
 /**
- * Created by redShaman on 3/2/2018.
+ * Created by Nagizade on 3/2/2018.
  */
 public class MusicController extends MediaController {
 
