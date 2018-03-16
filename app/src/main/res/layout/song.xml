@@ -23,7 +23,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:id="@+id/imageView"
-        android:src="@drawable/music_note"
+        android:src="@drawable/play"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:layout_alignBottom="@+id/song_artist" />

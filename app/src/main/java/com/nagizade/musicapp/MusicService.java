@@ -201,4 +201,14 @@ public class MusicService extends Service implements
     public void onDestroy() {
         stopForeground(true);
     }
+
+    public String getSName() {
+        Song playSong = songs.get(songPosn);
+        return playSong.getTitle();
+    }
+
+    public String getSArtist() {
+        Song playSong = songs.get(songPosn);
+        return playSong.getArtist();
+    }
 }

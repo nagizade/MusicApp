@@ -1,5 +1,6 @@
 package com.nagizade.musicapp;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import java.util.ArrayList;
@@ -18,7 +19,12 @@ import android.content.ServiceConnection;
 import android.view.MenuItem;
 import android.view.View;
 import com.nagizade.musicapp.MusicService.MusicBinder;
+
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.MediaController.MediaPlayerControl;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity implements MediaPlayerControl,ItemClickListener {
@@ -61,6 +67,48 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         mAdapter.setClickListener(this);
         setController();
 
+
+        final ImageButton playMusicButton = (ImageButton) findViewById(R.id.playMusicButton);
+
+
+        final SeekBar musicSeeker = (SeekBar) findViewById(R.id.seekBar);
+        if( musicSrv != null) {
+            musicSeeker.setMax(musicSrv.getDur());
+
+        }
+        playMusicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isPlaying()) {
+                    pause();
+                    playMusicButton.setImageResource(R.drawable.play);
+                } else {
+                    start();
+                    playMusicButton.setImageResource(R.drawable.end);
+                }
+            }
+        });
+        final Handler mHandler = new Handler();
+       //Updating SeekBar on UI thread and Setting Song details on mini bottom player
+        MainActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                if (musicSrv != null) {
+                    //Setting text for Song Title and Artist
+                    TextView songName = (TextView) findViewById(R.id.songName);
+                    TextView songPlayer = (TextView) findViewById(R.id.songPlayer);
+                    songName.setText(musicSrv.getSName());
+                    songPlayer.setText(musicSrv.getSArtist());
+
+                    //Setting Seeker Position
+                    int mCurrentPosition = musicSrv.getPosn() / 1000;
+                    musicSeeker.setProgress(mCurrentPosition);
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+        });
     }
 
     //connect to the service
@@ -125,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             setController();
             playbackPaused=false;
         }
-        controller.show(0);
+     //   controller.show(0);
     }
 
     @Override
@@ -192,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
 
     @Override
     public void start() {
-        musicSrv.go();
+       musicSrv.go();
     }
 
     @Override
@@ -272,5 +320,4 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         controller.hide();
         super.onStop();
     }
-
 }
