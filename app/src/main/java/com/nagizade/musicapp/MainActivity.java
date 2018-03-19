@@ -71,7 +71,28 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         final ImageButton playMusicButton = (ImageButton) findViewById(R.id.playMusicButton);
 
 
+
         final SeekBar musicSeeker = (SeekBar) findViewById(R.id.seekBar);
+        //Seeking the music with seekbar
+        musicSeeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(musicSrv != null && fromUser){
+                    musicSrv.seek(progress * 1000);
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         if( musicSrv != null) {
             musicSeeker.setMax(musicSrv.getDur());
 
@@ -90,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             }
         });
         final Handler mHandler = new Handler();
-       //Updating SeekBar on UI thread and Setting Song details on mini bottom player
+        //Updating SeekBar on UI thread and Setting Song details on mini bottom player
         MainActivity.this.runOnUiThread(new Runnable() {
 
             @Override
@@ -173,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             setController();
             playbackPaused=false;
         }
-     //   controller.show(0);
+        //   controller.show(0);
     }
 
     @Override
@@ -240,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
 
     @Override
     public void start() {
-       musicSrv.go();
+        musicSrv.go();
     }
 
     @Override
